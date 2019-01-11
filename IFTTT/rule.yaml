@@ -1,13 +1,34 @@
-%YAML 2.0
+%YAML 1.2
 ---
 applets:
-    event:
-        from: Vessel
-        event_type: Docking_Post
+    -
+        type: Docking_Post
         condition: 'apply_id!=None&&apply_status!="end"&&delivery_status="MISSING"'
+        from: Vessel
         to: Logistic
         function: 'restClient.notifyMsg(pid, "Missing", msgBody);'
-    coordinator:
-        name: lvc
-        url: localhost
-     
+        coordinator:
+            name: lvc
+            url: localhost
+    -
+        type: Docking_Post
+        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status=NOT_MISSING&&rend==pname'
+        from: Vessel
+        to: Logistic
+        function: 'restClient.notifyMsg(pid, "Meeting", msgBody);'
+        coordinator:
+            name: lvc
+            url: localhost
+    -
+        type: Docking_Post
+        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status==MEETING'
+        from: Vessel
+        to: Logistic
+        function: 'restClient.notifyMsg(pid, "Meeting", msgBody);'
+        coordinator:
+            name: lvc
+            url: localhost
+            
+# example python code
+# import yaml
+# x=yaml.load(open('IFTTT/rule.yaml'))
