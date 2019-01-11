@@ -1,0 +1,13 @@
+%YAML 2.0
+---
+applets:
+    event:
+        from: Vessel
+        event_type: Docking_Post
+        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status="MISSING"'
+        to: Logistic
+        function: 'restClient.notifyMsg(pid, "Missing", msgBody);'
+    coordinator:
+        name: lvc
+        url: localhost
+     
