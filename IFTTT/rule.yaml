@@ -1,5 +1,6 @@
 %YAML 1.2
 ---
+# https://shimo.im/sheet/FQfqj1NMyDIhVmaU/RIDOC
 applets:
     -
         type: Docking_Post
@@ -31,4 +32,4 @@ applets:
             
 # example python code
 # import yaml
-# x=yaml.load(open('IFTTT/rule.yaml'))
+# x=yaml.load(open('rule.yaml'))
