@@ -1,35 +1,115 @@
 %YAML 1.2
 ---
+# design document is here:
 # https://shimo.im/sheet/FQfqj1NMyDIhVmaU/RIDOC
-applets:
+# db file: contain users/channels/recipes
+users:
+- 
+    name: vessel
+    token: letmein
+-
+    name: manager
+    token: letmein
+-
+    name: supplier
+    token: letmein
+-
+    name: logistics
+    token: letmein
+-
+    name: vmc
+    token: letmein
+-
+    name: msc
+    token: letmein
+-
+    name: slc
+    token: letmein
+-
+    name: lvc
+    token: letmein
+channels:
+-
+    uuid: 0001    
+    name: VMC
+    host: http://vmc.ssp.org
+    port: 3001
+    url: /apply
+-
+    uuid: 0002
+    name: MSC
+    host: http://msc.ssp.org
+    port: 3002
+    url: 
+-
+    uuid: 0003
+    name: SLC
+    host: http://slc.ssp.org
+    port: 3003
+    url: 
+-
+    uuid: 0004
+    name: LVC
+    host: http://lvc.ssp.org
+    port: 3004
+    url: 
+recipes:
     -
-        type: Docking_Post
-        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status="MISSING"'
-        from: Vessel
-        to: Logistic
-        function: 'restClient.notifyMsg(pid, "Missing", msgBody);'
-        coordinator:
-            name: lvc
-            url: localhost
+        description: if apply spare part, then tell VMC
+        type: APPLY
+        user: vessel
+        channel_id: 0001
     -
-        type: Docking_Post
-        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status=NOT_MISSING&&rend==pname'
-        from: Vessel
-        to: Logistic
-        function: 'restClient.notifyMsg(pid, "Meeting", msgBody);'
-        coordinator:
-            name: lvc
-            url: localhost
+        description: if 筛选供货商, then notify vessel and manager
+        type: PAIRCRAETED
+        user: VMC
+        channel_id:  0001    
     -
-        type: Docking_Post
-        condition: 'apply_id!=None&&apply_status!="end"&&delivery_status==MEETING'
-        from: Vessel
-        to: Logistic
-        function: 'restClient.notifyMsg(pid, "Meeting", msgBody);'
-        coordinator:
-            name: lvc
-            url: localhost
-            
-# example python code
+        description: if 筛选供货商失败, then notify vessel
+        type: PAIRFAILED
+        user: VMC
+        channel_id: 0001     
+    -
+        description: if 筛选到有效的港口. then notify manager and supplier
+        type: PAIRCRAETED
+        user: MSC
+        channel_id: 0001     
+    -
+        description: if 筛选港口失败. then notify manager
+        type: PAIRFAILED
+        user: MSC
+        channel_id:  0001   
+    -
+        description: if 筛选合适的物流商. then notify logistics and supplier
+        type: PAIRCRAETED
+        user: SLC
+        channel_id:   0001   
+    -
+        description: if 筛选物流商失败. then notify supllier
+        type: PAIRFAILED
+        user: SLC
+        channel_id: 0001    
+    -
+        description: if 物流配对成功. then notify logistics and vessel
+        type: PAIRCRAETED
+        user: logistics
+        channel_id:  0001    
+    -
+        description: if 筛选物流商失败. then notify supllier
+        type: PAIRFAILED
+        user: SLC
+        channel_id:  0001  
+    -
+        description: if delivery tracing. then notify vessel and logistic
+        type: TRACING
+        user: LVC
+        channel_id:  0001   
+    -
+        description: if delivery meeting. then notify vessel and logistic
+        type: MEETING
+        user: LVC
+        channel_id: 0001
+    
+## example python code
 # import yaml
 # x=yaml.load(open('rule.yaml'))
