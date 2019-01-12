@@ -39,13 +39,13 @@ def handler(event, context):
 
 
 @app.route('/', methods=["POST", "GET"])
-def lambda_simulator():
-    print("enter lambda...")
+def ifttt_simulator():
+    print("enter ifttt...")
     print(request.json)
     event = request.json.get("event")
     context = request.json.get("context")
     ret = handler(event, context)
-    print("exit lambda...", ret)
+    print("exit ifttt...", ret)
     return json.dumps(ret.status_code, ensure_ascii=False)
 
 

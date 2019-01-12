@@ -26,6 +26,21 @@ recipes:
     user: vessel
     channel_id: 0001
 ```
+
+## demo to understand its principle
+- terminal 1
+```bash
+python vmc_simulator.py
+```
+- terminal 2
+```bash
+python ifttt_simulator.py
+```
+- terminal 3
+```bash
+python vessel_simulator.py
+```
+
 ## workflow
 
 If you want to call the API provided by VMC, first you need to check these two things:
