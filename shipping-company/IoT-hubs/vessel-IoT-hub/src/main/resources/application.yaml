@@ -1,0 +1,9 @@
+server:
+  port: 9051
+  context-path: /vesselIoT
+#
+#vessel properties
+#
+vessel:
+ vid: 413362260
+ locations: locations.csv
