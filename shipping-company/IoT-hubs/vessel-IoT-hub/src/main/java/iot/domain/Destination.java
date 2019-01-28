@@ -1,5 +1,8 @@
 package iot.domain;
 
+import lombok.ToString;
+
+@ToString
 public class Destination {
     private String name;
     private long anchoringDuration;

@@ -1,6 +1,7 @@
 package iot.util;
 
 import com.csvreader.CsvReader;
+import iot.domain.Destination;
 import iot.domain.Location;
 import iot.domain.VesselIoTData;
 import org.slf4j.Logger;
@@ -44,8 +45,8 @@ public class CsvUtil {
         }
         return  vesselStates;
     }
-    public static List<String> readDestinations(String filePath) throws IOException {
-        List<String> destinations= new ArrayList<String>();
+    public static List<Destination> readDestinations(String filePath) throws IOException {
+        List<Destination> destinations= new ArrayList<Destination>();
         // 创建CSV读对象
         CsvReader csvReader = new CsvReader(filePath);
         if (csvReader.getHeaders() != null){
@@ -56,7 +57,10 @@ public class CsvUtil {
         int i = 0;
         while((line=reader.readLine())!=null){
             String[] items= line.split(",");//CSV格式文件为逗号分隔符文件，这里根据逗号切分
-            String d = items[0].trim();
+            String dName = items[0].trim();
+            Long annchoringDuration = Long.parseLong(items[1].trim());
+            Long dockingDuration = Long.parseLong(items[2].trim());
+            Destination d = new Destination(dName , annchoringDuration , dockingDuration);
             destinations.add(d);
         }
         return  destinations;

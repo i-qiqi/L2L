@@ -1,13 +1,16 @@
 package iot.domain;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 
+@ToString
 public class VesselIoTData implements Serializable {
     private String vid;
     private double longitude;
     private double latitude;
     private double speed;
-    private  String timeStamp;
+    private String timeStamp; // Date String
 
     public VesselIoTData(String vid, double longitude, double latitude, double speed, String timeStamp) {
         this.vid = vid;
@@ -55,5 +58,9 @@ public class VesselIoTData implements Serializable {
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public  VesselIoTData deepCopy(){
+        return new VesselIoTData(this.vid , this.longitude , this.latitude , this.speed , this.timeStamp);
     }
 }

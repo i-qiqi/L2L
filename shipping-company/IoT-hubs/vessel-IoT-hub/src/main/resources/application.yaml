@@ -7,3 +7,4 @@ server:
 vessel:
  vid: 413362260
  locations: locations.csv
+ zoomInVal: 1000
