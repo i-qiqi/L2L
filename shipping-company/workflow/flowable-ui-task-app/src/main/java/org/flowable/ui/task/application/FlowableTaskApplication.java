@@ -12,8 +12,8 @@
  */
 package org.flowable.ui.task.application;
 
+import org.flowable.ui.task.application.conf.AppDispatcherServletConfiguration;
 import org.flowable.ui.task.conf.ApplicationConfiguration;
-import org.flowable.ui.task.servlet.AppDispatcherServletConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -14,8 +14,8 @@ import java.util.concurrent.Executor;
  * config and implement AsyncConfigure interface and override getAsyncExecutor
  * to get one TaskExecutor based on thread pool.
  */
-@SpringBootConfiguration
-@EnableAsync
+//@SpringBootConfiguration
+//@EnableAsync
 public class AsyncTaskExecutorConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {
