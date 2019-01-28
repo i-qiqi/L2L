@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RestController
+@RequestMapping({"/app"})
 public class LambdaHandler {
     private static final Logger logger = LoggerFactory.getLogger(LambdaHandler.class);
     private  LambdaService lambdaService;
@@ -21,8 +22,14 @@ public class LambdaHandler {
     }
     @RequestMapping(value = "/vessel/iot-data", method = RequestMethod.POST , produces = "application/json")
     public String delay(@RequestBody HashMap<String, Object> mp) throws JsonProcessingException {
-
+        logger.info(mp.toString());
         return "success";
+    }
+
+    @RequestMapping(value = "/hello" , method = RequestMethod.GET , produces = "application/json")
+    public String home() {
+        logger.info("test rest api.");
+        return "hello , manager";
     }
 
 }
