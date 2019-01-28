@@ -5,7 +5,7 @@ Created on Sat Jan 12 13:47:07 2019
 @author: clhu
 """
 from flask import Flask
-from flask import request, abort
+from flask import request, abort, jsonify
 import requests
 import yaml
 import json
@@ -38,11 +38,12 @@ def handler(event, context):
     if not find:
         return "error channel id...not register"
 
+    headers = {'Content-Type': "application/json"}
     data = {"event":event, "context": context}
-    ret = requests.post("http://{}:{}{}".format(host, port, url), data=data)
+    ret = requests.post("http://{}:{}{}".format(host, port, url), data=json.dumps(data), headers=headers)
 
-    print("exit handler....", ret)
-    return ret
+    print("exit handler....", ret.content)
+    return ret.content
 
 @app.route("/ping", methods=["GET", "POST"])
 def ifttt_test():
@@ -60,8 +61,10 @@ def ifttt_simulator():
     ret = handler(request.json.get("event"), request.json.get("context"))
 
     print("exit ifttt...", ret)
-    ret = {"return_message": ret} if ret else {"return_message": ""}
-    return json.dumps(ret, ensure_ascii=False)
+    if type(ret)==str:
+        return ret
+    ret = {"return_message": json.loads(ret)} if ret else {"return_message": ""}
+    return json.dumps(ret)
 
 
 if __name__ == "__main__":
