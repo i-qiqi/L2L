@@ -30,29 +30,30 @@ users:
     token: letmein
 channels:
 -
-    uuid: 0001    
-    name: VMC
-    host: http://vmc.ssp.org
-    port: 3001
-    url: /apply
+    uuid: 0001
+    name: manager
+    host: ssp-manager
+    port: 8000
+    url: http://ssp-manager:8000
 -
     uuid: 0002
-    name: MSC
-    host: http://msc.ssp.org
-    port: 3002
-    url: 
+    name: vessel-iot
+    host: ssp-vessel-iot
+    port: 8000
+    url: http://ssp-vessel-iot:8000
 -
     uuid: 0003
-    name: SLC
-    host: http://slc.ssp.org
-    port: 3003
-    url: 
+    name: logistics
+    host: ssp-logistics
+    port: 8000
+    url: http://ssp-logistics:8000
 -
     uuid: 0004
-    name: LVC
-    host: http://lvc.ssp.org
-    port: 3004
-    url: 
+    name: mlc
+    host: ssp-mlc
+    port: 8000
+    url: http://ssp-vessel-iot:8000
+
 recipes:
     -
         description: if apply spare part, then tell VMC
