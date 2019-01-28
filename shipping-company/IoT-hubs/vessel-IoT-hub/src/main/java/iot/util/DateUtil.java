@@ -83,4 +83,8 @@ public class DateUtil {
         dateStr = date2str(transForDate(ms));
         return dateStr;
     }
+
+    public static long translate2simuMs(long startMs , long curMs , long zoomInVal){
+        return  (curMs-startMs)*zoomInVal + startMs;
+    }
 }

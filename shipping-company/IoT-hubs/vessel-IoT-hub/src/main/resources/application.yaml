@@ -1,6 +1,6 @@
 server:
   port: 9051
-  context-path: /vesselIoT
+  context-path: /vessel-iot-hub
 #
 #vessel properties
 #

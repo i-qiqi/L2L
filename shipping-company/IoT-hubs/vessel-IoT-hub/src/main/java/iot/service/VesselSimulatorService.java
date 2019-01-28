@@ -14,6 +14,7 @@ import iot.util.CsvUtil;
 import iot.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -134,12 +135,13 @@ public class VesselSimulatorService {
             }
 
             //TODO: send vessel iot data to lambda function -- iot-consumer-function
+            logger.debug("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
 
             i++;
             y = x;
             Thread.sleep(sleepMs / track.getZoomInVal());
             y = System.currentTimeMillis();
-//            logger.debug((y-x)+"ms");
+            logger.debug((y-x)+"ms");
         }
 
 
@@ -150,11 +152,13 @@ public class VesselSimulatorService {
             if (arrivalDest.getAnchoringDuration() == 0) {
                 logger.info("Transiting into Docking status straightly");
                 payloadObjectNode.put("msgType", VesselIoTStatus.DOCKING);
+                track.setStatus(VesselIoTStatus.DOCKING);
                 //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
 
             } else {
                 logger.info("Transiting into Anchoring status");
                 payloadObjectNode.put("msgType", VesselIoTStatus.ANCHORING);
+                track.setStatus(VesselIoTStatus.ANCHORING);
                 //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
 
             }
@@ -167,27 +171,28 @@ public class VesselSimulatorService {
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
         long zoomVal = track.getZoomInVal();
-        long simuMs = DateUtil.str2date(track.getStartTimeStamp()).getTime();
+        long startMs = DateUtil.str2date(track.getStartTimeStamp()).getTime();
         Destination curDest = track.getDestinations().get(stepIdx);
-        long enterAimuADMs = new Date().getTime(); // record the the time entering into anchoring / docking
+        long enterADSimuMs = DateUtil.translate2simuMs(startMs ,new Date().getTime(),  zoomVal); // record the the time entering into anchoring / docking
         while (true) {
-            long curMs = (new Date().getTime() - simuMs) * zoomVal + simuMs;
+            long curMs =DateUtil.translate2simuMs (startMs , new Date().getTime() , zoomVal);
             long nextMs = curMs + 1000 * zoomVal;
             if (track.getStatus().equals(VesselIoTStatus.ANCHORING)) {
                 //update end time of anchoring , maybe the anchoring duration is updated
-                long newReachMs = enterAimuADMs + curDest.getAnchoringDuration()*60*60*1000; // hour to ms
-
+                long newReachMs = enterADSimuMs + curDest.getAnchoringDuration()*60*60*1000; // hour to ms
                 logger.debug("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + "new reach time : " + DateUtil.ms2dateStr(newReachMs));
+
                 if (newReachMs > curMs && newReachMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
+                    logger.debug("anchrong end ...");
                 }
             } else if (track.getStatus().equals(VesselIoTStatus.DOCKING)) {
-                long newDepartureMs = enterAimuADMs + curDest.getDockingDuration()*60*60*1000; // hour to ms
-
+                long newDepartureMs = enterADSimuMs + curDest.getDockingDuration()*60*60*1000; // hour to ms
                 logger.info("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + " New arrival time : " + DateUtil.ms2dateStr(newDepartureMs));
+
                 if (newDepartureMs > curMs && newDepartureMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
-
+                    logger.debug("docking end ...");
                     break;
                 }
             }
@@ -202,6 +207,8 @@ public class VesselSimulatorService {
         }
     }
 
+
+    @Async
     public void start() throws InterruptedException, AWSIotException, IOException {
 
         Track track = vesselIoTSimulator.getTrack();

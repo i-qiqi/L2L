@@ -1,5 +1,6 @@
 package iot.restapi;
 
+import com.amazonaws.services.iot.client.AWSIotException;
 import iot.domain.*;
 import iot.repos.LocationRepository;
 import iot.service.VesselSimulatorService;
@@ -24,5 +25,12 @@ public class VesselIoTSimulator {
     public VesselIoTSimulator(VesselSimulatorService vesselSimulatorService , @Value("${vessel.vid}") String vid) throws IOException {
         this.vesselSimulatorService = vesselSimulatorService;
         this.track = vesselSimulatorService.readRawData(vid);
+    }
+
+
+    public void start() throws InterruptedException, IOException, AWSIotException {
+        vesselSimulatorService.setVesselIoTSimulator(this);
+        vesselSimulatorService.initIoTData();
+        vesselSimulatorService.start();
     }
 }
