@@ -7,6 +7,8 @@ This system is introduced into L2L as `Vessel Business Entity`. It's a spring bo
 ```bash
 # login the vm with the pwd
 [bqzhu@pc ~]$ ssh ubuntu@ssp-vessel-iot
+# clone the L2L-ICWS pj
+ubuntu@ssp-vessel-iot:~$ git clone git@github.com:i-qiqi/L2L-ICWS.git
 # package and run the prj
 ubuntu@ssp-vessel-iot:~$ cd L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub
 ubuntu@ssp-vessel-iot:~/L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub$ mvn clean install -DskipTests spring-boot:run
