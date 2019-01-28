@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@RestController()
+@RestController
 public class APIController {
     private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
@@ -22,7 +22,7 @@ public class APIController {
         logger.info("test rest api.");
         return "hello , vessel-iot-A";
     }
-    @RequestMapping(value = "/start" , method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/start")
     public String start() throws InterruptedException, AWSIotException, IOException {
         logger.info("start vessel simulator...");
         vesselIoTSimulator.start();

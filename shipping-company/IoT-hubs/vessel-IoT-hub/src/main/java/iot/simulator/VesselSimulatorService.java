@@ -47,7 +47,7 @@ public class VesselSimulatorService {
 
     public Track readRawData(String vid) throws IOException {
         String dataPath = this.getClass().getResource("/").getPath() + "data/";
-        logger.debug("root path : " + dataPath);
+        logger.info("root path : " + dataPath);
         //Construct tracks
         Track t = new Track();
         List<Destination> destinations = CsvUtil.readDestinations(dataPath + "DE" + vid + ".csv");
@@ -93,7 +93,7 @@ public class VesselSimulatorService {
         }
         t.setVid(vid);
         t.setSteps(steps);
-        logger.debug("track is loaded completely : "+ t.toString());
+        logger.info("track is loaded completely : "+ t.toString());
         for(int i = 0 ; i < steps.size() ; i++){
             //compute duration in step;
             List<VesselIoTData> stepIoTData = steps.get(i).getVesselIoTData();
@@ -124,6 +124,8 @@ public class VesselSimulatorService {
         long y = 0;
         track.setStatus(VesselIoTStatus.VOYAGING);
         //TODO: to notify xxx of vessel status : VOYAGING
+        lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.VOYAGING ,
+                DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
 
         while (i < size) {
             x = System.currentTimeMillis();
@@ -144,15 +146,15 @@ public class VesselSimulatorService {
             }else{
                 curVesselState.setTimeStamp(newStateTime);
             }
-
+            logger.info("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
             //TODO: send vessel iot data to lambda function -- iot-consumer-function
-            logger.debug("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
             lambdaService.publishIoTData(curVesselState);
+
             i++;
             y = x;
             Thread.sleep(sleepMs / track.getZoomInVal());
             y = System.currentTimeMillis();
-            logger.debug((y-x)+"ms");
+            logger.info((y-x)+"ms");
         }
 
 
@@ -161,22 +163,24 @@ public class VesselSimulatorService {
             ObjectNode payloadObjectNode = objectMapper.createObjectNode();
             if (curStep.getAnchoringDuration() == 0) {
                 logger.info("Transiting into Docking status straightly");
-                payloadObjectNode.put("msgType", VesselIoTStatus.DOCKING);
                 track.setStatus(VesselIoTStatus.DOCKING);
                 //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
+//                lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.DOCKING ,
+//                        DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
 
             } else {
                 logger.info("Transiting into Anchoring status");
                 payloadObjectNode.put("msgType", VesselIoTStatus.ANCHORING);
                 track.setStatus(VesselIoTStatus.ANCHORING);
                 //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
-
+//                lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.ANCHORING ,
+//                        DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
             }
         }
     }
 
 
-    public void simuAD() {
+    public void simuAD() throws JsonProcessingException {
         //TODO: Timing simulation of anchoring and docking status of the ship
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
@@ -190,11 +194,13 @@ public class VesselSimulatorService {
             if (track.getStatus().equals(VesselIoTStatus.ANCHORING)) {
                 //update end time of anchoring , maybe the anchoring duration is updated
                 long newReachMs = enterADSimuMs + curStep.getAnchoringDuration()*60*60*1000; // hour to ms
-                logger.debug("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + "new reach time : " + DateUtil.ms2dateStr(newReachMs));
+                logger.info("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + "new reach time : " + DateUtil.ms2dateStr(newReachMs));
 
                 if (newReachMs > curMs && newReachMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
-                    logger.debug("anchrong end ...");
+//                    lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.DOCKING ,
+//                            DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
+                    logger.info("anchrong end ...");
                 }
             } else if (track.getStatus().equals(VesselIoTStatus.DOCKING)) {
                 long newDepartureMs = enterADSimuMs + curStep.getDockingDuration()*60*60*1000; // hour to ms
@@ -202,7 +208,7 @@ public class VesselSimulatorService {
 
                 if (newDepartureMs > curMs && newDepartureMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
-                    logger.debug("docking end ...");
+                    logger.info("docking end ...");
                     break;
                 }
             }
@@ -230,8 +236,11 @@ public class VesselSimulatorService {
             long x = System.currentTimeMillis();
             simuAD();
             long y = System.currentTimeMillis();
-            logger.debug((y-x)/1000+"s");
+            logger.info((y-x)/1000+"s");
             track.setStatus(VesselIoTStatus.END);
+            //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
+//            lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.END ,
+//                    DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
         }
     }
 
@@ -257,7 +266,7 @@ public class VesselSimulatorService {
      */
     public void delay(String vid , JsonNode rootNode) throws IOException {
         JsonNode destinationsNode = rootNode.get("destinations");
-        logger.debug("--delay--"+destinationsNode.toString());
+        logger.info("--delay--"+destinationsNode.toString());
         if (destinationsNode!= null) {
             List<Destination> destinations = new ArrayList<Destination>();
             for(int i = 0 ; i < destinationsNode.size() ; i++){

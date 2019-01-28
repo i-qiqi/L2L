@@ -87,4 +87,8 @@ public class DateUtil {
     public static long translate2simuMs(long startMs , long curMs , long zoomInVal){
         return  (curMs-startMs)*zoomInVal + startMs;
     }
+    public static String translate2simuDateStr(String startStr , long curMs , long zoomInVal){
+        long startMs = str2date(startStr).getTime();
+        return  ms2dateStr((curMs-startMs)*zoomInVal + startMs);
+    }
 }
