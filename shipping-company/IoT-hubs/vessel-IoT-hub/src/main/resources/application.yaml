@@ -8,3 +8,6 @@ vessel:
  vid: 413362260
  locations: locations.csv
  zoomInVal: 1000
+
+lambda:
+  address: ssp-lambda:3000

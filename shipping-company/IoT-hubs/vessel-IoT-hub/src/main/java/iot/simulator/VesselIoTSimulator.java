@@ -1,10 +1,7 @@
-package iot.restapi;
+package iot.simulator;
 
 import com.amazonaws.services.iot.client.AWSIotException;
 import iot.domain.*;
-import iot.repos.LocationRepository;
-import iot.service.VesselSimulatorService;
-import iot.util.CsvUtil;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Data

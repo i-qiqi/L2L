@@ -1,15 +1,14 @@
-package iot.service;
+package iot.simulator;
 
 import com.amazonaws.services.iot.client.AWSIotException;
-import com.amazonaws.services.iot.client.AWSIotMessage;
-import com.amazonaws.services.iot.client.AWSIotQos;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import iot.domain.*;
+import iot.lambda.LambdaPayload;
+import iot.lambda.LambdaService;
 import iot.repos.LocationRepository;
-import iot.restapi.VesselIoTSimulator;
 import iot.util.CsvUtil;
 import iot.util.DateUtil;
 import org.slf4j.Logger;
@@ -34,9 +33,12 @@ public class VesselSimulatorService {
 
     private VesselIoTSimulator vesselIoTSimulator;
 
-    public VesselSimulatorService(ObjectMapper objectMapper , LocationRepository locationRepository){
+    private  LambdaService lambdaService;
+
+    public VesselSimulatorService(ObjectMapper objectMapper , LocationRepository locationRepository , LambdaService lambdaService){
         this.objectMapper = objectMapper;
         this.locationRepository = locationRepository;
+        this.lambdaService = lambdaService;
     }
 
     public void setVesselIoTSimulator(VesselIoTSimulator vesselIoTSimulator) {
@@ -62,6 +64,8 @@ public class VesselSimulatorService {
         List<Step> steps = new ArrayList<Step>();
         if (k < dSize) {
             step.setNextPort(loc.getName());
+            step.setAnchoringDuration(destinations.get(k).getAnchoringDuration());
+            step.setDockingDuration(destinations.get(k).getDockingDuration());
             steps.add(step);
             for (int j = 0; j < len; j++) {
                 VesselIoTData vesselIoTData = trackData.get(j);
@@ -81,14 +85,22 @@ public class VesselSimulatorService {
                     k++;
                     loc = locationRepository.findLocation(destinations.get(k).getName());
                     step.setNextPort(loc.getName());
+                    step.setAnchoringDuration(destinations.get(k).getAnchoringDuration());
+                    step.setDockingDuration(destinations.get(k).getDockingDuration());
                     steps.add(step);
                 }
             }
         }
         t.setVid(vid);
-        t.setDestinations(destinations);
         t.setSteps(steps);
         logger.debug("track is loaded completely : "+ t.toString());
+        for(int i = 0 ; i < steps.size() ; i++){
+            //compute duration in step;
+            List<VesselIoTData> stepIoTData = steps.get(i).getVesselIoTData();
+            long duration = DateUtil.TimeMinus(stepIoTData.get(stepIoTData.size()-1).getTimeStamp() , stepIoTData.get(0).getTimeStamp());
+            steps.get(i).setVoyagingDuration(duration);
+        }
+
         return t;
     }
 
@@ -105,7 +117,6 @@ public class VesselSimulatorService {
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
         Step curStep = track.getSteps().get(stepIdx);
-        Destination curDest = track.getDestinations().get(stepIdx);
         List<VesselIoTData> stepIoTData = curStep.getVesselIoTData();
         int size = stepIoTData.size();
         int i = 0;
@@ -136,7 +147,7 @@ public class VesselSimulatorService {
 
             //TODO: send vessel iot data to lambda function -- iot-consumer-function
             logger.debug("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
-
+            lambdaService.publishIoTData(curVesselState);
             i++;
             y = x;
             Thread.sleep(sleepMs / track.getZoomInVal());
@@ -146,10 +157,9 @@ public class VesselSimulatorService {
 
 
         if (stepIdx <= track.getSteps().size() - 1) {
-            Destination arrivalDest = track.getDestinations().get(stepIdx);
             //TODO: Determine if the status is  anchoring or docking
             ObjectNode payloadObjectNode = objectMapper.createObjectNode();
-            if (arrivalDest.getAnchoringDuration() == 0) {
+            if (curStep.getAnchoringDuration() == 0) {
                 logger.info("Transiting into Docking status straightly");
                 payloadObjectNode.put("msgType", VesselIoTStatus.DOCKING);
                 track.setStatus(VesselIoTStatus.DOCKING);
@@ -170,16 +180,16 @@ public class VesselSimulatorService {
         //TODO: Timing simulation of anchoring and docking status of the ship
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
+        Step curStep = track.getSteps().get(stepIdx);
         long zoomVal = track.getZoomInVal();
         long startMs = DateUtil.str2date(track.getStartTimeStamp()).getTime();
-        Destination curDest = track.getDestinations().get(stepIdx);
         long enterADSimuMs = DateUtil.translate2simuMs(startMs ,new Date().getTime(),  zoomVal); // record the the time entering into anchoring / docking
         while (true) {
             long curMs =DateUtil.translate2simuMs (startMs , new Date().getTime() , zoomVal);
             long nextMs = curMs + 1000 * zoomVal;
             if (track.getStatus().equals(VesselIoTStatus.ANCHORING)) {
                 //update end time of anchoring , maybe the anchoring duration is updated
-                long newReachMs = enterADSimuMs + curDest.getAnchoringDuration()*60*60*1000; // hour to ms
+                long newReachMs = enterADSimuMs + curStep.getAnchoringDuration()*60*60*1000; // hour to ms
                 logger.debug("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + "new reach time : " + DateUtil.ms2dateStr(newReachMs));
 
                 if (newReachMs > curMs && newReachMs <= nextMs) {
@@ -187,7 +197,7 @@ public class VesselSimulatorService {
                     logger.debug("anchrong end ...");
                 }
             } else if (track.getStatus().equals(VesselIoTStatus.DOCKING)) {
-                long newDepartureMs = enterADSimuMs + curDest.getDockingDuration()*60*60*1000; // hour to ms
+                long newDepartureMs = enterADSimuMs + curStep.getDockingDuration()*60*60*1000; // hour to ms
                 logger.info("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + " New arrival time : " + DateUtil.ms2dateStr(newDepartureMs));
 
                 if (newDepartureMs > curMs && newDepartureMs <= nextMs) {
@@ -213,15 +223,15 @@ public class VesselSimulatorService {
 
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
-        List<Destination> destinations = track.getDestinations();
-        int dSize = destinations.size();
-        while (stepIdx < dSize) {
+        List<Step> steps = track.getSteps();
+        int size = steps.size();
+        while (stepIdx < size) {
             reportStep();
             long x = System.currentTimeMillis();
             simuAD();
             long y = System.currentTimeMillis();
             logger.debug((y-x)/1000+"s");
-
+            track.setStatus(VesselIoTStatus.END);
         }
     }
 

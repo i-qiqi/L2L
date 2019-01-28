@@ -3,7 +3,7 @@
 # design document is here:
 # https://shimo.im/sheet/FQfqj1NMyDIhVmaU/RIDOC
 # db file: contain users/channels/recipes
-users:
+users: # from
 - 
     name: vessel
     token: letmein
@@ -28,7 +28,7 @@ users:
 -
     name: lvc
     token: letmein
-channels:
+channels: ## to
 -
     uuid: 0001
     name: manager
@@ -54,63 +54,65 @@ channels:
     port: 8000
     url: http://ssp-vessel-iot:8000
 
-recipes:
-    -
-        description: if apply spare part, then tell VMC
-        type: APPLY
-        user: vessel
-        channel_id: 0001
-    -
-        description: if 筛选供货商, then notify vessel and manager
-        type: PAIRCRAETED
-        user: VMC
-        channel_id:  0001    
-    -
-        description: if 筛选供货商失败, then notify vessel
-        type: PAIRFAILED
-        user: VMC
-        channel_id: 0001     
-    -
-        description: if 筛选到有效的港口. then notify manager and supplier
-        type: PAIRCRAETED
-        user: MSC
-        channel_id: 0001     
-    -
-        description: if 筛选港口失败. then notify manager
-        type: PAIRFAILED
-        user: MSC
-        channel_id:  0001   
-    -
-        description: if 筛选合适的物流商. then notify logistics and supplier
-        type: PAIRCRAETED
-        user: SLC
-        channel_id:   0001   
-    -
-        description: if 筛选物流商失败. then notify supllier
-        type: PAIRFAILED
-        user: SLC
-        channel_id: 0001    
-    -
-        description: if 物流配对成功. then notify logistics and vessel
-        type: PAIRCRAETED
-        user: logistics
-        channel_id:  0001    
-    -
-        description: if 筛选物流商失败. then notify supllier
-        type: PAIRFAILED
-        user: SLC
-        channel_id:  0001  
-    -
-        description: if delivery tracing. then notify vessel and logistic
-        type: TRACING
-        user: LVC
-        channel_id:  0001   
-    -
-        description: if delivery meeting. then notify vessel and logistic
-        type: MEETING
-        user: LVC
-        channel_id: 0001
-    
+recipes: # action id
+-
+    description: if IoT data from vessel  updated , then tell manager
+    user: vessel
+    channel_id: 0001
+    method: POST
+    route: /flowable-task/vessel/iot-data
+    event_id: 0002
+-
+    description: if 筛选供货商, then notify vessel and manager
+    type: PAIRCRAETED
+    user: VMC
+    channel_id:  0001
+-
+    description: if 筛选供货商失败, then notify vessel
+    type: PAIRFAILED
+    user: VMC
+    channel_id: 0001
+-
+    description: if 筛选到有效的港口. then notify manager and supplier
+    type: PAIRCRAETED
+    user: MSC
+    channel_id: 0001
+-
+    description: if 筛选港口失败. then notify manager
+    type: PAIRFAILED
+    user: MSC
+    channel_id:  0001
+-
+    description: if 筛选合适的物流商. then notify logistics and supplier
+    type: PAIRCRAETED
+    user: SLC
+    channel_id:   0001
+-
+    description: if 筛选物流商失败. then notify supllier
+    type: PAIRFAILED
+    user: SLC
+    channel_id: 0001
+-
+    description: if 物流配对成功. then notify logistics and vessel
+    type: PAIRCRAETED
+    user: logistics
+    channel_id:  0001
+-
+    description: if 筛选物流商失败. then notify supllier
+    type: PAIRFAILED
+    user: SLC
+    channel_id:  0001
+-
+    description: if delivery tracing. then notify vessel and logistic
+    type: TRACING
+    user: LVC
+    channel_id:  0001
+-
+    description: if delivery meeting. then notify vessel and logistic
+    type: MEETING
+    user: LVC
+    channel_id: 0001
+
 ## example python code
 # import yaml
 # x=yaml.load(open('rule.yaml'))

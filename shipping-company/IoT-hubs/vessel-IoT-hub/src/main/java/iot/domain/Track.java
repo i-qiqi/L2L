@@ -12,8 +12,5 @@ public class Track {
     private int zoomInVal = 1000;
     private int stepIndex = 0;
     private String status = VesselIoTStatus.START;
-    private List<Destination> destinations;
     private List<Step>  steps;
-
-
 }
