@@ -124,6 +124,8 @@ public class VesselSimulatorService {
         long y = 0;
         track.setStatus(VesselIoTStatus.VOYAGING);
         //TODO: to notify xxx of vessel status : VOYAGING
+        lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.VOYAGING ,
+                DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
 
         while (i < size) {
             x = System.currentTimeMillis();
@@ -144,10 +146,10 @@ public class VesselSimulatorService {
             }else{
                 curVesselState.setTimeStamp(newStateTime);
             }
-
-            //TODO: send vessel iot data to lambda function -- iot-consumer-function
             logger.info("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
+            //TODO: send vessel iot data to lambda function -- iot-consumer-function
             lambdaService.publishIoTData(curVesselState);
+
             i++;
             y = x;
             Thread.sleep(sleepMs / track.getZoomInVal());
@@ -161,22 +163,24 @@ public class VesselSimulatorService {
             ObjectNode payloadObjectNode = objectMapper.createObjectNode();
             if (curStep.getAnchoringDuration() == 0) {
                 logger.info("Transiting into Docking status straightly");
-                payloadObjectNode.put("msgType", VesselIoTStatus.DOCKING);
                 track.setStatus(VesselIoTStatus.DOCKING);
                 //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
+//                lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.DOCKING ,
+//                        DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
 
             } else {
                 logger.info("Transiting into Anchoring status");
                 payloadObjectNode.put("msgType", VesselIoTStatus.ANCHORING);
                 track.setStatus(VesselIoTStatus.ANCHORING);
                 //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
-
+//                lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.ANCHORING ,
+//                        DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
             }
         }
     }
 
 
-    public void simuAD() {
+    public void simuAD() throws JsonProcessingException {
         //TODO: Timing simulation of anchoring and docking status of the ship
         Track track = vesselIoTSimulator.getTrack();
         int stepIdx = track.getStepIndex();
@@ -194,6 +198,8 @@ public class VesselSimulatorService {
 
                 if (newReachMs > curMs && newReachMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
+//                    lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.DOCKING ,
+//                            DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
                     logger.info("anchrong end ...");
                 }
             } else if (track.getStatus().equals(VesselIoTStatus.DOCKING)) {
@@ -232,6 +238,9 @@ public class VesselSimulatorService {
             long y = System.currentTimeMillis();
             logger.info((y-x)/1000+"s");
             track.setStatus(VesselIoTStatus.END);
+            //TODO: update vessel vessel-iot status "ANCHORING" to lambda function -- iot-consumer-function
+//            lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.END ,
+//                    DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
         }
     }
 

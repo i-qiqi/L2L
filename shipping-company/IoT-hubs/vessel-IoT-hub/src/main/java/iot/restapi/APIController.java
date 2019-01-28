@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@RestController()
+@RestController
 public class APIController {
     private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
