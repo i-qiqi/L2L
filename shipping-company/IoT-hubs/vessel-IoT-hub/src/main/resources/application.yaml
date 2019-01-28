@@ -1,3 +1,4 @@
+
 server:
   port: 8000
   context-path: /vessel-iot-hub
@@ -10,4 +11,6 @@ vessel:
  zoomInVal: 1000
 
 lambda:
-  address: ssp-lambda:3000
+  address: http://ssp-lambda:3000
+logging:
+  level: info

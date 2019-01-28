@@ -22,7 +22,7 @@ public class APIController {
         logger.info("test rest api.");
         return "hello , vessel-iot-A";
     }
-    @RequestMapping(value = "/start" , method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/start")
     public String start() throws InterruptedException, AWSIotException, IOException {
         logger.info("start vessel simulator...");
         vesselIoTSimulator.start();
