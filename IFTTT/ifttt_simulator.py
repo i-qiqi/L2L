@@ -64,7 +64,7 @@ def ifttt_simulator():
     if type(ret)==str:
         return ret
     ret = {"return_message": json.loads(ret)} if ret else {"return_message": ""}
-    return json.dumps(ret)
+    return json.dumps(ret, ensure_ascii=False)
 
 
 if __name__ == "__main__":
