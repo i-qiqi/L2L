@@ -7,15 +7,15 @@ users: # from
 - 
     name: vessel-iot
     token: letmein
-# -
-#     name: manager
-#     token: letmein
-# -
+-
+    name: manager
+    token: letmein
+-
 #     name: supplier
 #     token: letmein
-# -
-#     name: logistics
-#     token: letmein
+-
+   name: logistics
+   token: letmein
 # -
 #     name: vmc
 #     token: letmein
@@ -25,9 +25,9 @@ users: # from
 # -
 #     name: slc
 #     token: letmein
-# -
-#     name: lvc
-#     token: letmein
+-
+   name: mlc
+   token: letmein
 
 channels: # to
 -
@@ -56,12 +56,26 @@ channels: # to
 #     port: 8000
 #     url: /
 
-# -
-#     uuid: 0004
-#     name: mlc
-#     host: ssp-mlc
-#     port: 8000
-#     url: /
+-
+   uuid: 11111113
+   name: mlc
+   host: ssp-mlc
+   port: 8000
+   url: /mlc/vessel/decision
+
+-
+   uuid: 11111114
+   name: manager
+   host: ssp-manager
+   port: 8000
+   url: /manager/rendzvous-port
+
+-
+   uuid: 11111115
+   name: logistics
+   host: ssp-logistics
+   port: 8000
+   url: /logistics/rendzvous-port
 
 
 events: # action
@@ -75,6 +89,23 @@ events: # action
     description: VESSEL_DELAY
     user: vessel-iot
     channel_id: 11111112
+-
+    event_id: '1114'
+    description: SHIP_PROCESS_DELAY
+    user: manager
+    channel_id: 11111113
+
+
+-
+    event_id: '2221'
+    description: RENDZVOUS_PORT_UPDATE
+    user: mlc
+    channel_id: 11111114
+-
+    event_id: '2222'
+    description: RENDZVOUS_PORT_UPDATE
+    user: mlc
+    channel_id: 11111115
 # -
 #     event_id: 0001
 #     description: if 筛选供货商, then notify vessel and manager

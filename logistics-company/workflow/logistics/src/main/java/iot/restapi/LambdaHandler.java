@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 @RestController
@@ -35,6 +36,15 @@ public class LambdaHandler {
     public String home() {
         logger.info("test rest api.");
         return "hello , manager";
+    }
+
+    @RequestMapping(value = "/rendzvous-port", method = RequestMethod.POST , produces = "application/json")
+    public ResponseEntity<String> updateRend(@RequestBody HashMap<String, Object> mp) throws IOException {
+        logger.info(mp.toString());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String res = objectMapper.writeValueAsString(mp);
+        logger.debug("event--RENDZVOUS_PORT_UPDATE : " + res);
+        return new ResponseEntity<String>(res , HttpStatus.OK);
     }
 
 }

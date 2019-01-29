@@ -55,8 +55,8 @@ public class APIController {
 
         switch (vStatus){
             case VesselIoTStatus.VOYAGING :
-                String res = delayOnVoyaging(dx , dy);
-                return new ResponseEntity<String>(res , HttpStatus.OK);
+                delayOnVoyaging(dx , dy);
+                break;
             case VesselIoTStatus.ANCHORING :
                 break;
             case VesselIoTStatus.DOCKING :
@@ -69,7 +69,7 @@ public class APIController {
         return new ResponseEntity<String>("{\"status\":\"ok\"}" , HttpStatus.OK);
     }
 
-    public String delayOnVoyaging(int dx , int dy) throws JsonProcessingException { //dx , dy--hour
+    public void delayOnVoyaging(int dx , int dy) throws JsonProcessingException { //dx , dy--hour
         Track track = vesselIoTSimulator.getTrack();
         long dxMs = dx * 60 * 60 * 1000;
         long dyMs = dy * 60 * 60 * 1000;
@@ -83,9 +83,8 @@ public class APIController {
             curStep.setDockingDuration(dxMs + curStep.getDockingDuration());
 
             String timeStamp =  DateUtil.translate2simuDateStr(track.getStartTimeStamp(), new Date().getTime(), zoomInVal);
-            res = lambdaService.publishIoTDelayEvent(track , dxMs , dyMs ,timeStamp);
+            lambdaService.publishIoTDelayEvent(track , dxMs , dyMs ,timeStamp);
         }
-        return res;
     }
 
 }

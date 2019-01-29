@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class LambdaService {
@@ -34,16 +36,26 @@ public class LambdaService {
         return headers;
     }
 
+    /**
+     * if eventId == 2221 then RENDZVOUS_PORT_UPDATE : to logistics
+     * if eventId == 2222 then RENDZVOUS_PORT_UPDATE : to manager
+     * @param eventId
+     * @return
+     * @throws JsonProcessingException
+     */
 //    @Async
-    public String publishIoTData(VesselIoTData data) throws JsonProcessingException {
-        Event event = new Event("IOT_DATA_UPDATE" , "0002");
+    public String publishRendUpdateEvent(String eventId , String context) throws JsonProcessingException {
+        Event event = new Event("RENDZVOUS_PORT_UPDATE" , eventId);
         ObjectNode payload = objectMapper.createObjectNode();
         payload.putPOJO("event" , objectMapper.writeValueAsString(event));
-        payload.putPOJO("context" , objectMapper.writeValueAsString(data));
+        payload.putPOJO("context" , context);
         HttpEntity requestEntity = new HttpEntity(payload.toString(), getHeaders());
         logger.info(payload.toString());
         ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
         logger.info(response.getBody().toString());
         return  response.getBody().toString();
+//        return "ok";
     }
+
+
 }

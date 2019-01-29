@@ -1,0 +1,140 @@
+{
+	"info": {
+		"name": "l2l",
+		"_postman_id": "68a06171-7282-4295-b98f-9e1ff7638ac1",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/vessel-iot-hub/start",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8000/vessel-iot-hub/start",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"vessel-iot-hub",
+						"start"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/vessel-iot-hub/delay",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"dx\" : 5,\n\t\"dy\" : -2\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/vessel-iot-hub/delay",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"vessel-iot-hub",
+						"delay"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ssp-lambda:3000",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"event\" : {\n  \t\"event_type\" : \"IOT_DATA_UPDATE\",\n  \t\"event_id\" : \"0002\"\n  },\n  \"context\" : {\n  \t\"vid\" : \"413362260\",\n  \t\"longitude\" : 114.54404,\n  \t\"latitude\" : 30.66266,\n  \t\"speed\" : 7.3,\n  \t\"timeStamp\" : \"2019-01-28 11:37:23\"\n  \t}\n}"
+				},
+				"url": {
+					"raw": "ssp-lambda:3000",
+					"host": [
+						"ssp-lambda"
+					],
+					"port": "3000"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ssp-manager:8000/manager/vessel/iot-data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"test\" : \"ok\"\n}"
+				},
+				"url": {
+					"raw": "ssp-manager:8000/manager/vessel/iot-data",
+					"host": [
+						"ssp-manager"
+					],
+					"port": "8000",
+					"path": [
+						"manager",
+						"vessel",
+						"iot-data"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ssp-lambda:3000",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"event\" : {\n\t\t\"event_type\" : \"VESSEL_DELAY\",\n\t\t\"event_id\" : \"1113\"\n\t},\n\t\"context\" : {\n\t\t\"vid\" : \"413362260\",\n\t\t\"reason\" : \"xxx\",\n\t\t\"dx\" : 6,\n\t\t\"dy\" : 7,\n\t\t\"status\" : \"VOYAGING\",\n\t\t\"stepIndex\" : 2,\n\t\t\"steps\": [\n\t\t\t{\n\t\t\t\t\"voyagingDuration\" : 100000,\n\t\t\t\t\"anchoringDuration\" : 100000,\n\t\t\t\t\"dockingDuration\" : 100000,\n\t\t\t\t\"prePort\" : \"Wuhan\",\n\t\t\t\t\"nextPort\" : \"HuangShi\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"voyagingDuration\" : 100000,\n\t\t\t\t\"anchoringDuration\" : 100000,\n\t\t\t\t\"dockingDuration\" : 100000,\n\t\t\t\t\"prePort\" : \"Wuhan\",\n\t\t\t\t\"nextPort\" : \"HuangShi\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"voyagingDuration\" : 100000,\n\t\t\t\t\"anchoringDuration\" : 100000,\n\t\t\t\t\"dockingDuration\" : 100000,\n\t\t\t\t\"prePort\" : \"Wuhan\",\n\t\t\t\t\"nextPort\" : \"HuangShi\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"voyagingDuration\" : 100000,\n\t\t\t\t\"anchoringDuration\" : 100000,\n\t\t\t\t\"dockingDuration\" : 100000,\n\t\t\t\t\"prePort\" : \"Wuhan\",\n\t\t\t\t\"nextPort\" : \"HuangShi\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"voyagingDuration\" : 100000,\n\t\t\t\t\"anchoringDuration\" : 100000,\n\t\t\t\t\"dockingDuration\" : 100000,\n\t\t\t\t\"prePort\" : \"Wuhan\",\n\t\t\t\t\"nextPort\" : \"HuangShi\"\n\t\t\t}\n\t\t]\n\t}\n}"
+				},
+				"url": {
+					"raw": "ssp-lambda:3000",
+					"host": [
+						"ssp-lambda"
+					],
+					"port": "3000"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

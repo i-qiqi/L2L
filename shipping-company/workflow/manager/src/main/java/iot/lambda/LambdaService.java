@@ -46,4 +46,11 @@ public class LambdaService {
         logger.info(response.getBody().toString());
         return  response.getBody().toString();
     }
+
+    //    @Async
+    public void publishDelayEvent(String payload) throws JsonProcessingException {
+        HttpEntity requestEntity = new HttpEntity(payload, getHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
+        logger.info(response.getBody().toString());
+    }
 }

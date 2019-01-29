@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,6 +70,7 @@ public class LambdaService {
         logger.info(response.getBody().toString());
         return  response.getBody().toString();
     }
+    @Async
     public String publishIoTDelayEvent(Track track , long dxMs , long dyMs , String timeStamp) throws JsonProcessingException {
         Event event = new Event("VESSEL_DELAY" , "1113");
         ObjectNode payload = objectMapper.createObjectNode();
@@ -78,6 +80,8 @@ public class LambdaService {
         mp.put("reason" , "HUMAN_NOTIFICATION");
         mp.put("dx" , dxMs);
         mp.put("dy" , dyMs);
+        mp.put("zoomInVal" , track.getZoomInVal());
+        mp.put("startTime" , track.getStartTimeStamp());
         mp.put("status" , track.getStatus());
         mp.put("stepIndex" , track.getStepIndex());
         mp.put("steps" , CommonUtil.toStepPayloads(track.getSteps()));
@@ -85,10 +89,9 @@ public class LambdaService {
         mp.put("timeStamp" , timeStamp);
         payload.putPOJO("context" , objectMapper.writeValueAsString(mp));
         HttpEntity requestEntity = new HttpEntity(payload.toString(), getHeaders());
-//        logger.info(payload.toString());
-//        ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
-//        logger.info(response.getBody().toString());
-//        return  response.getBody().toString();
-        return payload.toString();
+        logger.info(payload.toString());
+        ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
+        logger.info(response.getBody().toString());
+        return  response.getBody().toString();
     }
 }

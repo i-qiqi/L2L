@@ -91,4 +91,9 @@ public class DateUtil {
         long startMs = str2date(startStr).getTime();
         return  ms2dateStr((curMs-startMs)*zoomInVal + startMs);
     }
+
+    public static String strAddMs(String startStr , long dMs){
+        long startMs = str2date(startStr).getTime();
+        return  ms2dateStr(startMs+dMs);
+    }
 }

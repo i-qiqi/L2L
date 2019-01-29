@@ -2,13 +2,6 @@ server:
   port: 8000
   context-path: /manager
   address: 0.0.0.0
-#
-#vessel properties
-#
-vessel:
- vid: 413362260
- locations: locations.csv
- zoomInVal: 1000
 
 lambda:
   address: http://ssp-lambda:3000

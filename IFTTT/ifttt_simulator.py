@@ -10,6 +10,11 @@ import requests
 import yaml
 import json
 
+import io
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 app = Flask(__name__)
 
 
@@ -20,7 +25,7 @@ def handler(event, context):
     return: string
     """
     print("entering handler....", event, context)
-    rules = yaml.load(open('rule.yaml', encoding='utf8'))
+    rules = yaml.load(io.open('rule.yaml', encoding='utf8'))
 
     event_id = event.get('event_id')
     channel_id = 0
@@ -64,7 +69,7 @@ def ifttt_simulator():
     if type(ret)==str:
         return ret
     ret = {"return_message": json.loads(ret)} if ret else {"return_message": ""}
-    return json.dumps(ret)
+    return json.dumps(ret,ensure_ascii=False)
 
 
 if __name__ == "__main__":
