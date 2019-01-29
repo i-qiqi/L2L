@@ -33,9 +33,15 @@ channels: # to
 -
     uuid: 11111111
     name: manager
-    host: 10.131.245.96 #ssp-manager
+    host: ssp-manager
     port: 8000
-    url: /flowable-task/vessel/iot-data
+    url: /manager/vessel/iot-data
+-
+    uuid: 11111112
+    name: manager
+    host: ssp-manager
+    port: 8000
+    url: /manager/vessel/delay
 # -
 #     uuid: 0002
 #     name: vessel-iot
@@ -64,6 +70,11 @@ events: # action
     description: if IoT data from vessel updated , then tell manager
     user: vessel-iot
     channel_id: 11111111
+-
+    event_id: '1113'
+    description: VESSEL_DELAY
+    user: vessel-iot
+    channel_id: 11111112
 # -
 #     event_id: 0001
 #     description: if 筛选供货商, then notify vessel and manager

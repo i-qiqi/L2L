@@ -2,14 +2,6 @@
 
 This space includes part of the source of the L2L framework and provides support material for the demo paper:
 
-***Coordinating IoT-enabled Autonomous Processes in Cross Enterprise Service Systems 
-Authored by Biqi Zhu, Chenglong Hu, Lin Ye, Hong-Linh Truong and  Liang Zhang***
-
-submitted to [ICSOC 2018](http://icsoc.org/).
-## Video
-The demo video is here👇
-
-[![placeholder](images/placeholder.png)](https://www.dropbox.com/s/ibw6gygo6aqy1a0/ICSOC2018-v7.mp4?dl=0)
 
 ## Application Scenario
 This demostration bases on the supplychain management for Ship Spare Parts (SSP) problem in China shipping company. 
@@ -26,6 +18,7 @@ there are very short time slots for a vessel to dock.
 
 All these dynamic uncertainties make current approaches, which are almost done by human and offline communication, 
 unfitted and costly.
+
 ## System Features Outline
 Empowered with IoT technologies business entities can perceive context instantly within an enterprise for optimizing 
 service-based business processes. Further, we can share to allow enterprise-to-enterprise coordinators to optimize business 
@@ -131,7 +124,10 @@ L2L
 │   ├── manager-A
 │   ├── supplier-A
 │   └── vessel-A
+├── IFTTT
+├── shpping-company
 ├── pom.xml
+├── userguide.md
 └── README.md
 ```
 -   [`L2L Frontend`](https://github.com/i-qiqi/L2L/tree/lambda)
@@ -139,49 +135,3 @@ L2L
 - if you want to know how to run the system , you can see the [`user guide `](userguide.md) for L2L Backend
 
 ## Experimental Step
-
-First and foremost, we assume every steps have already correctly done following the above user guide.
-So make sure that you have started all components shown in project structure.
-
-- Test frontend endpoint
-```console
-http://localhost:8000
-```
-- After you see the frontend view, you can start a vessel process. The RESTful Engine services can be 
-called to deal with the request. For example :
-```java
-    @RequestMapping(value = "/process-instances/{processName}", method = RequestMethod.POST)
-    public ProcessInstanceRepresentation StartProcessInstanceByName(@RequestBody Map<String, Object> mp , @PathVariable("processName") String processName) {
-        logger.info("--POST /process-instances/"+processName+"--");
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionName(processName).latestVersion().singleResult();
-        logger.info(processDefinition.toString());
-        Map<String , Object> vars = new HashMap<String , Object>();
-        //...
-        return new ProcessInstanceRepresentation(historicProcess, processDefinition, ((ProcessDefinitionEntity)
-                processDefinition).isGraphicalNotationDefined(), user);
-    }
-```
-- Login the BPMS for vessel enterprise with admin role , then you can check the task list for the 'Voyaging' task 
-and observe the real-time GPS coordinates of vessel business entity.
-```console
- http://localhost:9001/vessel-A/
-```
-- Once the vessel process sends the application to the manager, the vmc will start a manager process. 
-You can login the manager enterprise BPMS and find the "Approving" task.
-```console
-http://localhost:9011/manager-A/
-```
-- Once the application is approved, an order will sent to the supplier and the msc will start a supplier
-process.
-- Login the BPMS for supplier enterprise with admin role , then you can find the 'Approving' task 
-  and choose an appropriate policy for the logistics such as fixed-destination.
-```console
-http://localhost:9021/supplier-A/
-```
-- Once you confirm the logistics policy, the logistics task will be arranged to the specified logistics enterprise.
-- login the logistics enterprise BPMS, you can monitor the logistics state.
-```console
-http://localhost:9031/logistics-A/
-```
-- while the wagon is running following the schedule path, you can simulate to send delay event. the async event
-will be captured by the lvc and the lvc will make decision according to the predetermined policy.
