@@ -1,0 +1,16 @@
+
+server:
+  port: 8000
+  context-path: /vessel-iot-hub
+#
+#vessel properties
+#
+vessel:
+ vid: 413362260
+ locations: locations.csv
+ zoomInVal: 1000
+
+lambda:
+  address: http://ssp-lambda:3000
+logging:
+  level: info
