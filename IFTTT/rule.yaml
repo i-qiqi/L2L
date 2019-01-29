@@ -94,8 +94,6 @@ events: # action
     description: SHIP_PROCESS_DELAY
     user: manager
     channel_id: 11111113
-
-
 -
     event_id: '2221'
     description: RENDZVOUS_PORT_UPDATE
