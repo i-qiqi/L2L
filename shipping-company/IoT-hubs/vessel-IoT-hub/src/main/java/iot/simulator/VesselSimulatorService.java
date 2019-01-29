@@ -124,8 +124,8 @@ public class VesselSimulatorService {
         long y = 0;
         track.setStatus(VesselIoTStatus.VOYAGING);
         //TODO: to notify xxx of vessel status : VOYAGING
-        lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.VOYAGING ,
-                DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
+//        lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.VOYAGING ,
+//                DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
 
         while (i < size) {
             x = System.currentTimeMillis();
@@ -148,7 +148,7 @@ public class VesselSimulatorService {
             }
             logger.info("step < "+stepIdx+" : "+ size + " : " +i+ " > | "+ "vessel-iot-data : "+curVesselState );
             //TODO: send vessel iot data to lambda function -- iot-consumer-function
-            lambdaService.publishIoTData(curVesselState);
+//            lambdaService.publishIoTData(curVesselState);
 
             i++;
             y = x;
@@ -187,13 +187,14 @@ public class VesselSimulatorService {
         Step curStep = track.getSteps().get(stepIdx);
         long zoomVal = track.getZoomInVal();
         long startMs = DateUtil.str2date(track.getStartTimeStamp()).getTime();
-        long enterADSimuMs = DateUtil.translate2simuMs(startMs ,new Date().getTime(),  zoomVal); // record the the time entering into anchoring / docking
+        long enterASimuMs = DateUtil.translate2simuMs(startMs ,new Date().getTime(),  zoomVal); // record the the time entering into anchoring / docking
+        long enterDSimuMs = enterASimuMs;
         while (true) {
             long curMs =DateUtil.translate2simuMs (startMs , new Date().getTime() , zoomVal);
             long nextMs = curMs + 1000 * zoomVal;
             if (track.getStatus().equals(VesselIoTStatus.ANCHORING)) {
                 //update end time of anchoring , maybe the anchoring duration is updated
-                long newReachMs = enterADSimuMs + curStep.getAnchoringDuration()*60*60*1000; // hour to ms
+                long newReachMs = enterASimuMs + curStep.getAnchoringDuration(); // hour to ms
                 logger.info("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + "new reach time : " + DateUtil.ms2dateStr(newReachMs));
 
                 if (newReachMs > curMs && newReachMs <= nextMs) {
@@ -201,11 +202,14 @@ public class VesselSimulatorService {
 //                    lambdaService.publishIoTStatus(track.getVid(), VesselIoTStatus.DOCKING ,
 //                            DateUtil.translate2simuDateStr(track.getStartTimeStamp() , new Date().getTime() , track.getZoomInVal()));
                     logger.info("anchrong end ...");
+                    enterDSimuMs = DateUtil.translate2simuMs(startMs ,new Date().getTime(),  zoomVal); // record the the time entering into anchoring / docking
+                    track.setStatus(VesselIoTStatus.DOCKING);
+                    logger.info("enter docking ...");
+
                 }
             } else if (track.getStatus().equals(VesselIoTStatus.DOCKING)) {
-                long newDepartureMs = enterADSimuMs + curStep.getDockingDuration()*60*60*1000; // hour to ms
+                long newDepartureMs = enterDSimuMs + curStep.getDockingDuration(); // hour to ms
                 logger.info("Current time : " + DateUtil.ms2dateStr(curMs) + " Next time : " + DateUtil.ms2dateStr(nextMs) + " New arrival time : " + DateUtil.ms2dateStr(newDepartureMs));
-
                 if (newDepartureMs > curMs && newDepartureMs <= nextMs) {
                     //TODO: update vessel vessel-iot status "DOCKING"  to lambda function -- iot-consumer-function
                     logger.info("docking end ...");

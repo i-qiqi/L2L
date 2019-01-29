@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import iot.VesselIoTSpringBootApplication;
+import iot.domain.Track;
 import iot.domain.VesselIoTData;
+import iot.util.CommonUtil;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +42,6 @@ public class LambdaService {
 
 //    @Async
     public String publishIoTData(VesselIoTData data) throws JsonProcessingException {
-        LambdaPayload lambdaPayload = new LambdaPayload();
         Event event = new Event("IOT_DATA_UPDATE" , "0002");
         ObjectNode payload = objectMapper.createObjectNode();
         payload.putPOJO("event" , objectMapper.writeValueAsString(event));
@@ -53,7 +55,6 @@ public class LambdaService {
 
     //    @Async
     public String publishIoTStatus(String vid , String vStatus , String timeStamp) throws JsonProcessingException {
-        LambdaPayload lambdaPayload = new LambdaPayload();
         Event event = new Event("VESSEL_STATUS_UPDATE" , "0002");
         ObjectNode payload = objectMapper.createObjectNode();
         payload.putPOJO("event" , objectMapper.writeValueAsString(event));
@@ -67,5 +68,27 @@ public class LambdaService {
         ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
         logger.info(response.getBody().toString());
         return  response.getBody().toString();
+    }
+    public String publishIoTDelayEvent(Track track , long dxMs , long dyMs , String timeStamp) throws JsonProcessingException {
+        Event event = new Event("VESSEL_DELAY" , "1113");
+        ObjectNode payload = objectMapper.createObjectNode();
+        payload.putPOJO("event" , objectMapper.writeValueAsString(event));
+        Map<String,Object> mp = new HashMap<String,Object>();
+        mp.put("vid" , track.getVid());
+        mp.put("reason" , "HUMAN_NOTIFICATION");
+        mp.put("dx" , dxMs);
+        mp.put("dy" , dyMs);
+        mp.put("status" , track.getStatus());
+        mp.put("stepIndex" , track.getStepIndex());
+        mp.put("steps" , CommonUtil.toStepPayloads(track.getSteps()));
+        mp.put("unit_type" , "MILLs");
+        mp.put("timeStamp" , timeStamp);
+        payload.putPOJO("context" , objectMapper.writeValueAsString(mp));
+        HttpEntity requestEntity = new HttpEntity(payload.toString(), getHeaders());
+//        logger.info(payload.toString());
+//        ResponseEntity<String> response = restTemplate.exchange(lambda_addr , HttpMethod.POST , requestEntity , String.class);
+//        logger.info(response.getBody().toString());
+//        return  response.getBody().toString();
+        return payload.toString();
     }
 }
