@@ -1,17 +1,14 @@
-# Vessel IoT Hub
-## Introduction
-This system is introduced into L2L as `Vessel Business Entity`. It's a spring boot application and employs the AWS IoT technology to simulate the vessel.
-### Prerequisites 
+# Manager
+The `Manager` is a enhanced workflow application with annotion-enable ability, based on [Activiti](https://www.activiti.org/).
+### Prerequisites
 ### How to run
-- login the vm `ubuntu@ssp-vessel-iot`, then package and run the `vessel-iot-hub` project as follow:
-```bash
+- login the vm `ubuntu@ssp-manager`, then package and run the `manager` project as follows:
+```sh
 # login the vm with the pwd
-[bqzhu@pc ~]$ ssh ubuntu@ssp-vessel-iot
+[bqzhu@pc ~]$ ssh ubuntu@ssp-manager
 # clone the L2L-ICWS prj with the pwd
-ubuntu@ssp-vessel-iot:~$ git clone git@github.com:i-qiqi/L2L-ICWS.git
+ubuntu@ssp-manager:~$ git clone git@github.com:i-qiqi/L2L-ICWS.git
 # package and run the prj
-ubuntu@ssp-vessel-iot:~$ cd L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub
-ubuntu@ssp-vessel-iot:~/L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub$ mvn clean install -DskipTests spring-boot:run
-
+ubuntu@ssp-manager:~$ cd L2L-ICWS/shipping-company/workflow/manager
+ubuntu@ssp-manager:~/L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub$ mvn clean install -DskipTests spring-boot:run
 ```
-
