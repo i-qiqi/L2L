@@ -36,7 +36,7 @@ public class APIController {
     @RequestMapping("/hello")
     public String home() {
         logger.info("test rest api.");
-        return "hello , vessel-iot-A";
+        return "hello , vessel-iot-hub";
     }
     @RequestMapping(value = "/start")
     public String start() throws InterruptedException, AWSIotException, IOException {

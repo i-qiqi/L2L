@@ -47,7 +47,7 @@ public class LambdaHandler {
     @RequestMapping(value = "/hello" , method = RequestMethod.GET)
     public String home() {
         logger.info("test rest api.");
-        return "hello , manager";
+        return "hello , mlc";
     }
 
 }
