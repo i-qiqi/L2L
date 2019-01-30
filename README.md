@@ -81,9 +81,10 @@ If you don't have it installed already, install the [Postman client](https://www
 		 ```
 - **VESSEL-DELAY** :
 
-	- source |  destination | event_id | event_type
+	 source |  destination | event_id | event_type
 	| ------ | ------ | ------ |------ |
 	ssp-manager | ssp-manager| 1113| VESSEL_DELAY
+	
 	- when the simulator is running , human can post request named `DELAY from HUMAN--> http trigger` to propagate the delay event to the manager.
 	- At the manager end , the event will be received like following:
 		```json
@@ -187,7 +188,8 @@ If you don't have it installed already, install the [Postman client](https://www
 	}
 	  ```
 - **RENDZVOUS-PORT-UPDATE** :
-	 source |  destination | event_id | event_type
+	
+	source |  destination | event_id | event_type
   | ------ | ------ | ------ |------ |
   ssp-mlc | ssp-manager| 2221| RENDZVOUS_PORT_UPDATE
   - Similar to the above , the event is received like follows;
