@@ -1,5 +1,6 @@
 [TOC]
 # L2L Framework
+
 The experiment aims to demonstrate the L2L framework proposed in our paper how to achieve on-the-fly collaboration of legacy business process systems in an open environment in a nonintrusive, lightweight and flexible manner. The architecure of L2L is as follows: :point_down:
 <center>
 <img src="images/L2L-ICWS-Ifttt-events.jpg">
@@ -16,8 +17,9 @@ Initially , our business scenario originated from  Ship Spare Parts (SSP) proble
 - ***Inter-enterprise Coordinator*** : such as **`Manager-Logistics Coordinator(MLC)`** , they can perceive the event from **`IFTTT`** and deal with them by `decision-making`.
 - ***Policy Repository*** ：
 ## Quick Start
----
+
 ### Prerequisite
+
 If you want to quickly setup all the components and try out,  The prerequisite is that **5 virtual machines (ubuntu 18.04,8cores+16G)** need to be prepared, and [JDK8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), [Maven](http://maven.apache.org/) and other softwares need to be installed on each node.
 - add these hosts to /etc/hosts.
 
@@ -30,7 +32,9 @@ If you want to quickly setup all the components and try out,  The prerequisite i
 	ssp-lambda | xxx  |  
 
 ### Detailed Guide
+
 #### Setup the L2L cluster environment
+
 | Sr. No. | Step details           |                    Link                    |
 |:------- |:---------------------- |:------------------------------------------:|
 | 1       | Setup `vessel-iot-hub` |        [Link](/shipping-company/IoT-hubs/vessel-IoT-hub/README.md)         |
@@ -38,4 +42,5 @@ If you want to quickly setup all the components and try out,  The prerequisite i
 | 3       | Setup `mlc`        |       [Link](/static_assets/test.md)       |
 | 4       | Setup `logistics`        |       [Link](/static_assets/test.md)       |
 |5|Setup `aws-lambda`|[Link](/static_assets/test.md)|
-#### Examples for testing
+
+#### Examples for Integration Testing With IFTTT

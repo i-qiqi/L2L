@@ -12,3 +12,4 @@ ubuntu@ssp-manager:~$ git clone git@github.com:i-qiqi/L2L-ICWS.git
 ubuntu@ssp-manager:~$ cd L2L-ICWS/shipping-company/workflow/manager
 ubuntu@ssp-manager:~/L2L-ICWS/shipping-company/IoT-hubs/vessel-IoT-hub$ mvn clean install -DskipTests spring-boot:run
 ```
+- The `manager` app server runs on `ssp-manager:8000`

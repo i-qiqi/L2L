@@ -13,4 +13,4 @@ ubuntu@ssp-logistics:~$ cd L2L-ICWS/logistics-company/workflow/logistics
 ubuntu@ssp-logistics:~/L2L-ICWS/logistics-company/workflow/logistics$ mvn clean install -DskipTests spring-boot:run
 
 ```
-- The logistics app server runs on `ssp-logistics:8000`
+- The `logistics` app server runs on `ssp-logistics:8000`
