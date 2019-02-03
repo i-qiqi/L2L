@@ -48,7 +48,7 @@ If you want to quickly setup all the components and try out,  The prerequisite i
 <strong></strong>
 </center>
 
-In an open environment, many uncertain asynchronous events will be thrown out. We use **`IFTTT Serverless Function`** to distribute the source events to the desired destinations. When some event trigger the `IFTTT`,  regardless of the trigger manners, eg. http trriger, kafka messge queue triger.etc, the `IFTTT` will check the condition, namely `this` of the `IFTTT` concept, to determine which destinations are desired. these filter conditions is configured in [rule.yaml](IFTTT/rule.yaml).  
+In an open environment, many uncertain asynchronous events will be thrown out. We use **`IFTTT Serverless Function`** (`IFTTT` for short) to distribute the source events to the desired destinations. When some event trigger the `IFTTT`,  regardless of the trigger manners, eg. http trriger, or kafka messge queue triger.etc, the `IFTTT` will check the condition, namely `this` of the `IFTTT` concept, to determine to `whom` with `that` information. These filter conditions are configured in [rule.yaml](IFTTT/rule.yaml).  
 
 #### Step1 : Interact with your Application
 If you don't have Postman installed already, install the [Postman client](https://www.getpostman.com/) on your machine. then import the [l2l.postman_collection.json](l2l.postman_collection.json) to your postman client.
