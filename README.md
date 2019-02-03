@@ -7,12 +7,12 @@ The experiment aims to demonstrate the L2L framework proposed in our paper how t
 </center>
 
 Our business scenario comes from the Ship Spare Parts (SSP) replenishment problem in shipping industry. There are three participants, namely `Shipping Company` ,`Supplier Company` and `Logistics Company`. Their enterprise legacy systems are isolated and heterogeneous, like the cubic nodes shown in the architectural diagram. For the SSP scenario, we assume EIS being workflow systems where a workflow engine supports a set of workflow models and instances. These EIS are autonomous so we cannot know their operations except interacting with them through exposed APIs. On the premise of maintaining highly autonomy of each system, L2L introduces some new components (shaded components in above architectural diagram) and concepts to bridge different enterprise systems so as to facilitate information comunication and cross-enterprise business decision-making. For example,  in the `Shipping Company` node,  the shaded components are newly introduced, which take charge of internal and/or external collaboration.
-- ***IoT Hub*** : `IoT Hub` manages an IoT device as a single `Business Entity` and allows `Human Interaction`.
-- ***Serverless Funtions*** : We implements **`IFTTT`**,**`Collaboration Service`** by `Serverless Function Framwork`
+- ***IoT Hub*** : `IoT Hub` manages IoT devices as a `Business Entity` which includes `Human Interaction`.
+- ***Serverless Funtions*** : We implement **`IFTTT`**,**`Collaboration Services`** by the `Serverless Function Framwork`
 - ***Context Sharing*** : Enterprises can selectively expose internal information to the outside world via `Context Sharing`
-- ***Event Gateway*** :
-- ***Annotation-enable Workflow*** : We extend the traditional workflow to facilitate business process collaboration across diverse enterprises, and patch annotations on  the process definition to flexibly  adapt to emerging business scenarios , not only SSP problem , but also cold chain transportation, IoT scenarios. To see more [here](annotation.md).
-- ***Inra-enterprise Coordinator*** : eg. **`vmc`** component
+- ***Event Gateway*** : The bridge connects legacy EIS and other components
+- ***Annotation-enable Workflow*** : We extend the traditional workflow to patch workflow models with annotations in order to be adapt to emerging business scenarios, e.g. from legacy shipping services, to IoT-enabled shipping, then SSP-enabled shiping, or shipping services for cold-chain, etc. To see more [here](annotation.md).
+- ***Inra-enterprise Coordinator*** : eg. the component **`vmc`** which coordinates the interaction of managers and vessels of a shipping company  
 - ***Inter-enterprise Coordinator*** : such as **`Manager-Logistics Coordinator(MLC)`** , they can perceive the event from **`IFTTT`** and deal with them by `decision-making`.
 - ***Policy Repository*** ：
 ## Quick Start
