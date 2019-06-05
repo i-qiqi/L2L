@@ -1,18 +1,18 @@
 # L2L Framework
 
-The experiment aims to demonstrate the L2L framework proposed in our paper how to achieve on-the-fly collaboration of legacy business process systems in an open environment in a nonintrusive, lightweight and flexible manner. The architecure of L2L is as follows: :point_down:
+The experiment aims to demonstrate the L2L framework proposed in our paper how to achieve on-the-fly collaboration of legacy business process systems in a non-intrusive, light-weight and flexible manner. The application of L2L on the SSP problem is depicted as: :point_down:
 <center>
 <img src="images/L2L-ICWS-Ifttt-events.jpg">
 <strong></strong>
 </center>
 
-Initially , our business scenario originated from  Ship Spare Parts (SSP) problem in China shipping company. There are four participants, namely `Shipping Company` ,`Supplier Company` and `Logistics Company`. Their enterprise legacy systems are isolated and heterogeneous, like the cubic nodes shown in the architecture diagram.The current enterprise legacy system is mainly composed of `EISs`, `Traditional Workflow` and other `white components` inside nodes. The `Traditional workflow` is dedicated to handle the intra-enterprise business , and can not be directly integrate with external enterprise systems and internal emerging components, like IoT infrastructure. On the premise of maintaining highly autonomy of each system, L2L introduces some new components and concepts to bridge different enterprise systems so as to facilitate information comunication and cross-enterprise business decision-making. Inside the cubic nodes, such as  `Shipping Company`,  the grey components are newly introduced, which is in charge of internal or external collaboration.
-- ***IoT Hub*** : `IoT Hub` manages an IoT device as a single `Business Entity` and allows `Human Interaction`.
-- ***Serverless Funtions*** : We implements **`IFTTT`**,**`Collaboration Service`** by `Serverless Function Framwork`
+Our business scenario comes from the Ship Spare Parts (SSP) replenishment problem in shipping industry. There are three participants, namely `Shipping Company` ,`Supplier Company` and `Logistics Company`. Their enterprise legacy systems are isolated and heterogeneous, like the cubic nodes shown in the architectural diagram. For the SSP scenario, we assume EIS being workflow systems where a workflow engine supports a set of workflow models and instances. These EIS are autonomous so we cannot know their operations except interacting with them through exposed APIs. On the premise of maintaining highly autonomy of each system, L2L introduces some new components (shaded components in above architectural diagram) and concepts to bridge different enterprise systems so as to facilitate information comunication and cross-enterprise business decision-making. For example,  in the `Shipping Company` node,  the shaded components are newly introduced, which take charge of internal and/or external collaboration.
+- ***IoT Hub*** : `IoT Hub` manages IoT devices as a `Business Entity` which includes `Human Interaction`.
+- ***Serverless Funtions*** : We implement **`IFTTT`**,**`Collaboration Services`** by the `Serverless Function Framwork`
 - ***Context Sharing*** : Enterprises can selectively expose internal information to the outside world via `Context Sharing`
-- ***Event Gateway*** :
-- ***Annotation-enable Workflow*** : We extend the traditional workflow to facilitate business process collaboration across diverse enterprises, and patch annotations on  the process definition to flexibly  adapt to emerging business scenarios , not only SSP problem , but also cold chain transportation, IoT scenarios. To see more [here](annotation.md).
-- ***Inra-enterprise Coordinator*** : eg. **`vmc`** component
+- ***Event Gateway*** : The bridge connects legacy EIS and other components
+- ***Annotation-enable Workflow*** : We extend the traditional workflow to patch workflow models with annotations in order to be adapt to emerging business scenarios, e.g. from legacy shipping services, to IoT-enabled shipping, then SSP-enabled shiping, or shipping services for cold-chain, etc. To see more [here](annotation.md).
+- ***Inra-enterprise Coordinator*** : eg. the component **`vmc`** which coordinates the interaction of managers and vessels of a shipping company  
 - ***Inter-enterprise Coordinator*** : such as **`Manager-Logistics Coordinator(MLC)`** , they can perceive the event from **`IFTTT`** and deal with them by `decision-making`.
 - ***Policy Repository*** ：
 ## Quick Start
@@ -38,9 +38,9 @@ If you want to quickly setup all the components and try out,  The prerequisite i
 |:------- |:---------------------- |:------------------------------------------:|
 | 1       | Setup `vessel-iot-hub` |        [Link](/shipping-company/IoT-hubs/vessel-IoT-hub/README.md)         |
 | 2       | Setup `manager`        | [Link](/shipping-company/workflow/manager/README.md) |
-| 3       | Setup `mlc`        |       [Link](/static_assets/test.md)       |
-| 4       | Setup `logistics`        |       [Link](/static_assets/test.md)       |
-|5|Setup `aws-lambda`|[Link](/static_assets/test.md)|
+| 3       | Setup `mlc`        |       [Link](/Coordinators/mlc/README.md)       |
+| 4       | Setup `logistics`        |       [Link](/logistics-company/workflow/logistics/README.md)       |
+|5|Setup `aws-lambda`|[Link](/IFTTT/README.md)|
 
 ### Examples for Integration Testing With IFTTT
 <center>
@@ -48,10 +48,10 @@ If you want to quickly setup all the components and try out,  The prerequisite i
 <strong></strong>
 </center>
 
-In an open environment, many uncertain asynchronous events will be thrown out. We use **`IFTTT Serverless Function`** to distribute the source events to the desired destinations. When some event trigger the `IFTTT`,  regardless of the trigger manners, eg. http trriger, kafka messge queue triger.etc, the `IFTTT` will check the condition, namely `this` of the `IFTTT` concept, to determine which destinations are desired. these filter conditions is configured in [rule.yaml](IFTTT/rule.yaml).  
+In an open environment, many uncertain asynchronous events will be thrown out. We use **`IFTTT Serverless Function`** (`IFTTT` for short) to distribute the source events to the desired destinations. When some event trigger the `IFTTT`,  regardless of the trigger manners, eg. http trriger, or kafka messge queue triger.etc, the `IFTTT` will check the condition, namely `this` of the `IFTTT` concept, to determine to `whom` with `that` information. These filter conditions are configured in [rule.yaml](IFTTT/rule.yaml).  
 
 #### Step1 : Interact with your Application
-If you don't have it installed already, install the [Postman client](https://www.getpostman.com/) on your machine. then import the [l2l.postman_collection.json](l2l.postman_collection.json) to your postman client.
+If you don't have Postman installed already, install the [Postman client](https://www.getpostman.com/) on your machine. then import the [l2l.postman_collection.json](l2l.postman_collection.json) to your postman client.
 <center>
 <img src="images/test-import.jpg">
 <strong></strong>
@@ -81,9 +81,10 @@ If you don't have it installed already, install the [Postman client](https://www
 		 ```
 - **VESSEL-DELAY** :
 
-	- source |  destination | event_id | event_type
+	 source |  destination | event_id | event_type
 	| ------ | ------ | ------ |------ |
 	ssp-manager | ssp-manager| 1113| VESSEL_DELAY
+	
 	- when the simulator is running , human can post request named `DELAY from HUMAN--> http trigger` to propagate the delay event to the manager.
 	- At the manager end , the event will be received like following:
 		```json
@@ -187,7 +188,8 @@ If you don't have it installed already, install the [Postman client](https://www
 	}
 	  ```
 - **RENDZVOUS-PORT-UPDATE** :
-	 source |  destination | event_id | event_type
+	
+	source |  destination | event_id | event_type
   | ------ | ------ | ------ |------ |
   ssp-mlc | ssp-manager| 2221| RENDZVOUS_PORT_UPDATE
   - Similar to the above , the event is received like follows;
