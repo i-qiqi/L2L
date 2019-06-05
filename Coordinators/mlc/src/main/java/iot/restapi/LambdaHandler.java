@@ -34,11 +34,11 @@ public class LambdaHandler {
 
         //send decision result event to manager
         String res =  handlerService.createRendUpdateEvent2manager(mp);
-        lambdaService.publishRendUpdateEvent("2221" , res);
+//        lambdaService.publishRendUpdateEvent("2221" , res);
 
         //send decision result event to logistics
         res = handlerService.createRendUpdateEvent2logistics(mp);
-        lambdaService.publishRendUpdateEvent("2222" , res);
+//        lambdaService.publishRendUpdateEvent("2222" , res);
 
 //        return  ResponseEntity.status(HttpStatus.OK).body(null);
         return new ResponseEntity<String>(res , HttpStatus.OK);

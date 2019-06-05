@@ -38,10 +38,10 @@ public class LambdaHandler {
     public ResponseEntity<String> delay(@RequestBody HashMap<String, Object> mp) throws IOException {
         logger.info(mp.toString());
         ObjectMapper objectMapper = new ObjectMapper();
-        String payload = handlerService.tranformDelayEvent(mp);
-        logger.debug("payload of delay event to mlc : " + payload);
-        lambdaService.publishDelayEvent(payload);
-        return new ResponseEntity<String>(payload , HttpStatus.OK);
+//        String payload = handlerService.tranformDelayEvent(mp);
+//        logger.debug("payload of delay event to mlc : " + payload);
+//        lambdaService.publishDelayEvent(payload);
+        return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/rendzvous-port", method = RequestMethod.POST , produces = "application/json")
