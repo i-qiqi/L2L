@@ -1,0 +1,13 @@
+topic_Bulletin:
+    name: Topic Bulletin
+    db_Tables:
+        - coordination_Services:
+            name: coordination-services
+        - coordinators:
+            name: coordinators
+        - participants:
+            name: participants
+        - pub_Topics:
+            name: pub-topics
+        - sub_Topics:
+            name: sub-topics    
