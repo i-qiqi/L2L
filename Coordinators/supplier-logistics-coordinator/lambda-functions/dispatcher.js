@@ -26,39 +26,39 @@ var snsClient = new AWS.SNS({apiVersion: '2010-03-31'});
 
 exports.lambda_handler = (event, context) => {
   try {
-      // const ret = await axios(url);
-      //if 
-      // var params = {
-      //   TopicArn: 'arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-input-channel',
-      //   Message: JSON.stringify({
-      //       'event': 'MESSAGE_TEXT_FROM_LAMBDA_of_NODEJS8.10'  
-      //     }), /* required */
-      //   MessageStructure: 'string'
-      // };
+      const ret = await axios(url);
+      if 
+      var params = {
+        TopicArn: 'arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-input-channel',
+        Message: JSON.stringify({
+            'event': 'MESSAGE_TEXT_FROM_LAMBDA_of_NODEJS8.10'  
+          }), /* required */
+        MessageStructure: 'string'
+      };
   
-      // var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
-      // publishTextPromise.then(
-      //   function(data) {
-      //     console.log('MessageID is ' + data.MessageId);
-      //   }).catch(
-      //     function(err) {
-      //     console.error(err, err.stack);
-      // });
+      var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
+      publishTextPromise.then(
+        function(data) {
+          console.log('MessageID is ' + data.MessageId);
+        }).catch(
+          function(err) {
+          console.error(err, err.stack);
+      });
 
-      // var params = {
-      //   TableName: 'snslambda',
-      //   Item: {
-      //       'date': {S: '2019-05-20'}
-      //   }
-      // };
-      // // Call DynamoDB to add the item to the table
-      // ddb.putItem(params, function(err, data) {
-      //   if (err) {
-      //     console.log("Error", err);
-      //   } else {
-      //     console.log("Success", data);
-      //   }
-      // })
+      var params = {
+        TableName: 'snslambda',
+        Item: {
+            'date': {S: '2019-05-20'}
+        }
+      };
+      // Call DynamoDB to add the item to the table
+      ddb.putItem(params, function(err, data) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          console.log("Success", data);
+        }
+      })
 
       response = {
           'statusCode': 200,
