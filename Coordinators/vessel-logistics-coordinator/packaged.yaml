@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Vessel Manager Coordinator
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  LvcAppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://l2l/3e70b58690792e9ebadb5e379d93b35d
+      Handler: app.lambda_handler
+      Runtime: nodejs8.10
+      Events:
+        LvcApp:
+          Type: Api
+          Properties:
+            Path: /lvc
+            Method: get
+  DispatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://l2l/3e70b58690792e9ebadb5e379d93b35d
+      Handler: dispatcher.lambda_handler
+      Runtime: nodejs8.10
+      Events:
+        dispatch:
+          Type: SNS
+          Properties:
+            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://l2l/3e70b58690792e9ebadb5e379d93b35d
+      Handler: register.send
+      Runtime: nodejs8.10
+      Events:
+        registration:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: post
+  SetUUIDFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://l2l/3e70b58690792e9ebadb5e379d93b35d
+      Handler: register.receive
+      Runtime: nodejs8.10
+      Events:
+        PubEventDispatch:
+          Type: SNS
+          Properties:
+            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-input-channel
+            FilterPolicy:
+              business_key:
+              - lvc
+              event_type:
+              - setuuid
+Outputs:
+  LvcAppApi:
+    Description: API Gateway endpoint URL for Prod stage for LvcApp function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/lvc/
+  LvcAppFunction:
+    Description: LvcApp Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - LvcAppFunction
+      - Arn
+  LvcAppFunctionIamRole:
+    Description: Implicit IAM Role created for LvcApp function
+    Value:
+      Fn::GetAtt:
+      - LvcAppFunctionRole
+      - Arn

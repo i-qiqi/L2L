@@ -17,7 +17,7 @@ AWS.config.update({region: 'cn-northwest-1'});
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  * 
  */
-exports.lambda_handler = (event, context) => {
+exports.lambda_handler = async (event, context) => {
     try {
         // const ret = await axios(url);
         response = {
@@ -27,6 +27,7 @@ exports.lambda_handler = (event, context) => {
                 // location: ret.data.trim()
             })
         }
+        
     } catch (err) {
         console.log(err);
         return err;

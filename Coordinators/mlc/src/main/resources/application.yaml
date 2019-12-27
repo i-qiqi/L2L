@@ -1,9 +1,0 @@
-server:
-  port: 8000
-  context-path: /mlc
-  address: 0.0.0.0
-
-lambda:
-  address: http://ssp-lambda:3000
-logging:
-  level: info

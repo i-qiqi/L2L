@@ -1,0 +1,20 @@
+application:
+    id: 'none'
+    name: Manager Supplier Coordinator
+    type: coordinator
+    business_key: msc
+    description : Coordinator between manager and supplier company
+    output_channel: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel
+    input_channel: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-input-channel
+    services:
+      - xxFunction:
+        trigger_events:
+          - 
+             topic_in: A_in
+             type: SNS
+             filter: none
+          - 
+            topic_default_in: topic_default_in
+            type: SNS
+            filter: none
+            topic_default_out: topic_default_out

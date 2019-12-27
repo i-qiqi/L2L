@@ -45,3 +45,4 @@ document/
 .mvn/*
 logs
 *.xls
+**node_modules**

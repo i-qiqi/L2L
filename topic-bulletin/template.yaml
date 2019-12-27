@@ -10,7 +10,7 @@ Globals:
     #     S3_KEY: topic-bulletin/application.yaml 
 
 Resources:
-  HelloWorldFunction:
+  BulletinAppFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: lambda-functions/
@@ -22,7 +22,7 @@ Resources:
           Properties:
             Path: /hello
             Method: get
-  PubEventDispatchFunction:
+  DispatchFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: lambda-functions/
@@ -35,8 +35,14 @@ Resources:
         PubEventDispatch:
           Type: SNS
           Properties:
-            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel  
-  SubEventDispatchFunction:
+            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel
+            FilterPolicy:
+              event_type:
+                - dispatch
+  ############################################################################################
+  # For registration
+  ###########################################################################################
+  RegisterFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: lambda-functions/
@@ -46,18 +52,79 @@ Resources:
         SubEventDispatch:
           Type: SNS
           Properties:
-            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel 
+            Topic: arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-output-channel
+            FilterPolicy:
+              event_type:
+                - registration
+  ############################################################################################
+  ############################################################################################
+  # For decision-making
+  ###########################################################################################
+  PutCoordinationServiceFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-functions/decision-making
+      Handler: decision-making-util.putItem
+      Runtime: nodejs8.10
+      Events:
+        PutCoordinationService:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /coordination-services
+            Method: put
+  ############################################################################################
+  
 
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  ############################################################################################
+  # For collaboration networking
+  ###########################################################################################
+  PutCollaborationItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-functions/collaboration-network
+      Handler: collaboration-network-util.putItem
+      Runtime: nodejs8.10
+      Events:
+        PutCoordinationService:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /collaboraion
+            Method: put
+  ############################################################################################
+
+
+   ############################################################################################
+  # For collaboration networking
+  ###########################################################################################
+  PutIVEItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-functions/instant-virtual-enterprise
+      Handler: ive-util.putItem
+      Runtime: nodejs8.10
+      Events:
+        PutCoordinationService:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /ive
+            Method: put
+  ############################################################################################
+
+  ############################################################################################
+  # For event pub/sub
+  ###########################################################################################
+
+  ############################################################################################
+# Outputs:
+#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+#   # Find out more about other implicit resources you can reference within SAM
+#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+#   HelloWorldApi:
+#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+#   HelloWorldFunction:
+#     Description: "Hello World Lambda Function ARN"
+#     Value: !GetAtt HelloWorldFunction.Arn
+#   HelloWorldFunctionIamRole:
+#     Description: "Implicit IAM Role created for Hello World function"
+#     Value: !GetAtt HelloWorldFunctionRole.Arn

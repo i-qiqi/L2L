@@ -1,4 +1,4 @@
-# sam-app
+# Vessel logistics Coordinator
 
 This is a sample template for sam-app - Below is a brief explanation of what we have generated for you:
 
@@ -207,3 +207,10 @@ sam logs -n HelloWorldFunction --stack-name sam-app --tail
 **NOTE**: Alternatively this could be part of package.json scripts section.
 
 ---
+
+```
+sam package --template-file template.yaml --s3-bucket l2l --output-template-file packaged.yaml
+
+sam deploy --template-file ./packaged.yaml --stack-name lvc --capabilities CAPABILITY_IAM
+
+```
