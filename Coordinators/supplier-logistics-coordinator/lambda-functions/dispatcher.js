@@ -27,7 +27,6 @@ var snsClient = new AWS.SNS({apiVersion: '2010-03-31'});
 exports.lambda_handler = (event, context) => {
   try {
       const ret = await axios(url);
-      if 
       var params = {
         TopicArn: 'arn:aws-cn:sns:cn-northwest-1:148543509440:context-sharing-input-channel',
         Message: JSON.stringify({
@@ -48,7 +47,7 @@ exports.lambda_handler = (event, context) => {
       var params = {
         TableName: 'snslambda',
         Item: {
-            'date': {S: '2019-05-20'}
+            'date': {S:  new Date() }
         }
       };
       // Call DynamoDB to add the item to the table
@@ -63,7 +62,7 @@ exports.lambda_handler = (event, context) => {
       response = {
           'statusCode': 200,
           'body': JSON.stringify({
-              message: 'hello world',
+              message: 'dispatch finished',
               // location: ret.data.trim()
           })
       }
