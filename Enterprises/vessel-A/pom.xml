@@ -20,7 +20,7 @@
         <activiti.version>6.0.0</activiti.version>
         <!-- Web container version -->
         <tomcat.version>7.0.85</tomcat.version>
-        <dubbo.version>2.6.5</dubbo.version>
+        <dubbo.version>2.6.12</dubbo.version>
     </properties>
     <dependencyManagement>
         <dependencies>
